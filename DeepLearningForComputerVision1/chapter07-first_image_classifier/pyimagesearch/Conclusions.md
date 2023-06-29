@@ -1,7 +1,7 @@
 The k-NN algorithm is extremlely simple to implement and understand.
 
 Running the k-NN script Will Output the following in the terminal, fot the cats-vs-dogs data from Kaggle:
-```python
+```
 [INFO] loading images...
 [INFO] processed 500/25000
 [INFO] processed 1000/25000
