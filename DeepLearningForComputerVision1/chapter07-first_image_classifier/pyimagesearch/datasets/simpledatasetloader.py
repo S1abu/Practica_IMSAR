@@ -1,10 +1,9 @@
 # import the necessary packages
-
 import numpy as np
 import cv2
 import os
 
-class SimpleDataseLoader:
+class SimpleDatasetLoader:
     def __init__(self, preprocessors=None):
         # store the image preprocessor
         self.preprocessors = preprocessors
@@ -25,13 +24,13 @@ class SimpleDataseLoader:
             # that our path has the following format:
             # /path/to/dataset/{class}/{image}.jpg
             image = cv2.imread(imagePath)
-            labels = imagePath.split(os.path.sep)[-2]
+            label = imagePath.split(os.path.sep)[-2]
 
-        # check to see if out preprocessors are not None:
-        if self.preprocessors is not None:
-            # loop over the preprocessors and apply each to the image
-            for p in self.preprocessors:
-                image = p.preprocessors(image)
+            # check to see if out preprocessors are not None:
+            if self.preprocessors is not None:
+                # loop over the preprocessors and apply each to the image
+                for p in self.preprocessors:
+                    image = p.preprocess(image)
 
             # treat our processed image as a "feature vector"
             # by updating the data list followed by the labels
@@ -39,8 +38,9 @@ class SimpleDataseLoader:
             labels.append(label)
 
             # show an update every 'verbose' images
-            if verbose > 0 and i > 0 and (i + 1) % verbose ==0:
+            if verbose > 0 and i > 0 and (i + 1) % verbose == 0:
                 print("[INFO] processed {}/{}".format(i + 1,
-                                                      len(imagePath)))
+                                                      len(imagePaths)))
+
         # return a tuple the data and labels
         return (np.array(data), np.array(labels))
