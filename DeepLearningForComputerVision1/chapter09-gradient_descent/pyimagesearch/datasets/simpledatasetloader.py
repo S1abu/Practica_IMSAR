@@ -1,7 +1,9 @@
 # import the necessary packages
-import numpy as np
-import cv2
 import os
+
+import cv2
+import numpy as np
+
 
 class SimpleDatasetLoader:
     def __init__(self, preprocessors=None):
