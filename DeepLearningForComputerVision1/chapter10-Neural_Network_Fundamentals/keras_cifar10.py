@@ -41,7 +41,7 @@ model.add(Dense(10, activation="softmax"))
 
 # train the model using SGD
 print("[INFO] training network...")
-sgd = SGD(0.01)
+sgd = SGD(learning_rate=.01)
 model.compile(loss="categorical_crossentropy", optimizer=sgd,
               metrics=["accuracy"])
 H = model.fit(trainX, trainY, validation_data=(testX, testY),

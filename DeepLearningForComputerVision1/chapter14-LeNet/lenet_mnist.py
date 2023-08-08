@@ -20,12 +20,12 @@ data = dataset.data
 # design matrix such that the matrix is:
 # num_samples x depth x rows x columns
 if K.image_data_format() == "channels_first":
-    data = np.array(data).reshape(data.shape[0], 1, 28, 28)
+    data = data.reshape(data.shape[0], 1, 28, 28)
 
 # otherwise, we are using "channels last" ordering, so the design
 # matrix shape should be: num_samples x rows x columns x depth
 else:
-    data = np.array(data).reshape(data.shape[0], 28, 28, 1)
+    data = data.reshape(data.shape[0], 28, 28, 1)
 
 # scale the input data to the range [0, 1] and perform a train/test
 # split

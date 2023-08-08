@@ -1,7 +1,7 @@
 # import the necessary packages
 from keras.models import Sequential
 from keras.layers.convolutional import Conv2D
-from keras.layers.core import Activation, Flatten, Dense
+from keras.layers.core import Activation, Flatten, Dense, Dropout
 from keras import backend as K
 
 
@@ -25,6 +25,7 @@ class ShallowNet:
         # softmax classifier
         model.add(Flatten())
         model.add(Dense(classes))
+        model.add(Dropout(0.5))
         model.add(Activation("softmax"))
 
         # return the constructed network architecture

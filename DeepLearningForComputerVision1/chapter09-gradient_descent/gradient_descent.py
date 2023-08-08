@@ -60,7 +60,7 @@ for epoch in np.arange(0, args["epochs"]):
 
     # now that we have our predictions, we need to determine the
     # 'error', which is the difference between our predictions and
-    # the true vvalues
+    # the true values
     error = preds - trainY
     loss = np.sum(error ** 2)
     losses.append(loss)

@@ -7,6 +7,7 @@ from pyimagesearch.preprocessing.simplepreprocessor import SimplePreprocessor
 from pyimagesearch.datasets.simpledatasetloader import SimpleDatasetLoader
 from pyimagesearch.nn.conv.shallownet import ShallowNet
 from keras.optimizers import SGD
+from keras.optimizers import Adam
 from imutils import paths
 import matplotlib.pyplot as plt
 import numpy as np
@@ -44,7 +45,8 @@ testY = LabelBinarizer().fit_transform(testY)
 
 # initialize the optimizer and model
 print("[INFO] compiling model...")
-opt = SGD(lr=0.005)
+# opt = SGD(learning_rate=0.005)
+opt = Adam(learning_rate=0.00001) # optimized
 model = ShallowNet.build(width=32, height=32, depth=3, classes=3)
 model.compile(loss="categorical_crossentropy", optimizer=opt,
               metrics=["accuracy"])
@@ -73,3 +75,5 @@ plt.xlabel("Epoch #")
 plt.ylabel("Loss/Accuracy")
 plt.legend()
 plt.show()
+
+# python shallownet_animals.py -d /home/slabu/Fisiere_Practica_Vara/ShallowNet-Animals-Classification-master/datasets/animals/
