@@ -1,4 +1,3 @@
-# import the necessary packages
 from sklearn.preprocessing import LabelBinarizer
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import classification_report
@@ -6,6 +5,7 @@ from pyimagesearch.preprocessing.imagetoarraypreprocessor import ImageToArrayPre
 from pyimagesearch.preprocessing.aspectawarepreprocessor import AspectAwarePreprocessor
 from pyimagesearch.datasets.simpledatasetloader import SimpleDatasetLoader
 from pyimagesearch.nn.conv.minivggnet import MiniVGGNet
+from keras.preprocessing.image import ImageDataGenerator
 from keras.optimizers import SGD
 from imutils import paths
 import matplotlib.pyplot as plt
@@ -20,7 +20,7 @@ ap.add_argument("-d", "--dataset", required=True,
                 help="path to input dataset")
 args = vars(ap.parse_args())
 
-# grab the list of images that we’ll be describing, then extract
+# gram the list of images that we;kk be describing, then extract
 # the class label names from the image paths
 print("[INFO] loading images...")
 imagePaths = list(paths.list_images(args["dataset"]))
@@ -39,15 +39,21 @@ data = data.astype("float") / 255.0
 
 # partition the data into training and testing splits using 75% of
 # the data for training and the remaining 25% for testing
-(trainX, testX, trainY, testY) = train_test_split(data, labels, test_size=0.25, random_state=42)
+(trainX, testX, trainY, testY) = train_test_split(data, labels,
+                                                  test_size=.25, random_state=42)
 
 # convert the labels from integers to vectors
 trainY = LabelBinarizer().fit_transform(trainY)
 testY = LabelBinarizer().fit_transform(testY)
 
+# construct the image generator for data augmentation
+aug = ImageDataGenerator(rotation_range=30, width_shift_range=0.1,
+                         height_shift_range=0.1, shear_range=.2, zoom_range=.2,
+                         horizontal_flip=True, fill_mode="nearest")
+
 # initialize the optimizer and model
 print("[INFO] compiling model...")
-opt = SGD(learning_rate=0.05)
+opt = SGD(learning_rate=.05)
 model = MiniVGGNet.build(width=64, height=64, depth=3,
                          classes=len(classNames))
 model.compile(loss="categorical_crossentropy", optimizer=opt,
@@ -55,8 +61,9 @@ model.compile(loss="categorical_crossentropy", optimizer=opt,
 
 # train the network
 print("[INFO] training network...")
-H = model.fit(trainX, trainY, validation_data=(trainX, trainY),
-              batch_size=32, epochs=100, verbose=1)
+H = model.fit_generator(aug.flow(trainX, trainY, batch_size=32),
+                        validation_data=(testX, testY), steps_per_epoch=len(trainX) // 32,
+                        epochs=100, verbose=1)
 
 # evaluate the network
 print("[INFO] evaluating network...")
@@ -77,4 +84,4 @@ plt.ylabel("Loss/Accuracy")
 plt.legend()
 plt.show()
 
-# python minivggnet_flowers17.py --dataset ../datasets/Flowers-17/images/
+# python minivggnet_flowers17_data_aug.py --dataset ../datasets/Flowers-17/images/
