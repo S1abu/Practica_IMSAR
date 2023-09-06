@@ -1,6 +1,6 @@
 # import the necessary packages
 from keras.layers.normalization.batch_normalization import BatchNormalization
-from keras.layers.convolutional import Conv2D, AveragePooling2D
+from keras.layers.convolutional import Conv2D, AveragePooling2D, ZeroPadding2D, MaxPooling2D
 from keras.layers.core import Activation, Dense
 from keras.layers import Flatten, Input
 from keras.models import Model
@@ -47,7 +47,7 @@ class ResNet:
             shortcut = Conv2D(K, (1, 1), strides=stride,
                               use_bias=False, kernel_regularizer=l2(reg))(act1)
 
-        # add togheder the shortcut and the final CONV
+        # add together the shortcut and the final CONV
         x = add([conv3, shortcut])
 
         # return the addition as the output of the ResNet module
@@ -77,6 +77,17 @@ class ResNet:
             # apply a single CONV layer
             x = Conv2D(filters[0], (3, 3), use_bias=False,
                        padding="same", kernel_regularizer=l2(reg))(x)
+
+        # check to see if we are using Tiny ImageNet dataset
+        elif dataset == "tiny_imagenet":
+            # apply CONV => BN => ACT => POOL to reduce spatial size
+            x = Conv2D(filters[0], (5, 5), use_bias=False,
+                       padding="same", kernel_regularizer=l2(reg))(x)
+            x = BatchNormalization(axis=chanDim, epsilon=bnEps,
+                                   momentum=bnMom)(x)
+            x = Activation("relu")(x)
+            x = ZeroPadding2D((1, 1))(x)
+            x = MaxPooling2D((3, 3), strides=(2, 2))(x)
 
         # loop over the number of stages
         for i in range(0, len(stages)):
